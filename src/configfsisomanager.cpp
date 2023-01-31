@@ -74,7 +74,7 @@ void mount_iso(char *iso_path)
 		symlink(massStorageRoot, strjin(configRoot, "/mass_storage.0"));
 	}
 	sysfs_write(lunFile, iso_path);
-	sysfs_write(lunCdRom, "1");
+	sysfs_write(lunCdRom, "0");
 	sysfs_write(lunRo, "1");
 
 	set_udc();
