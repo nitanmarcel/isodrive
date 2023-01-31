@@ -58,17 +58,15 @@ bool isdir(char *path)
 void sysfs_write(char *path, char *content)
 {
 	std::cout << "Write: " << content << " -> " << path << std::endl;
-	int fd;
-	if (fd = open(path, O_WRONLY) == -1)
-	{
-		perror("Failed to open sysfs file");
-		return;
+	std::ofstream sysfsFile;
+	sysfsFile.open(path);
+	if (!sysfsFile.is_open()) {
+		perror("Failed to open sysfs path");
 	}
-	if (write(fd, content, strlen(content) == -1))
-	{
-		perror("Failed to write sysfs file");
-	}
-	close(fd);
+	sysfsFile << content;
+	perror("Status");
+	sysfsFile.close();
+	std::cout << std::endl;
 }
 
 
@@ -84,6 +82,3 @@ char *getprop(char *key)
 	return value;
 
 }
-
-
-
