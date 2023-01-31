@@ -60,7 +60,7 @@ void sysfs_write(char *path, char *content)
 	std::cout << "Write: " << content << " -> " << path << std::endl;
 	int fd;
 	fd = open(path, O_WRONLY);
-	write(fd, content, 1);
+	write(fd, content, strlen(content));
 	close(fd);
 }
 
