@@ -58,7 +58,7 @@ void mount_iso(char *iso_path)
 	char *massStorageRoot = strjin(functionRoot, "/mass_storage.0");
 	char *lunRoot = strjin(massStorageRoot, "/lun.0");
 	
-	char *stallFile = strjin(massStorageRoot, "stall");
+	char *stallFile = strjin(massStorageRoot, "/stall");
 	char *udcFile = strjin(gadgetRoot, "/UDC");
 	char *lunFile = strjin(lunRoot, "/file");
 	char *lunCdRom = strjin(lunRoot, "/cdrom");
