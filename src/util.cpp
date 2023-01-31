@@ -59,10 +59,18 @@ void sysfs_write(char *path, char *content)
 {
 	std::cout << "Write: " << content << " -> " << path << std::endl;
 	int fd;
-	fd = open(path, O_WRONLY);
-	write(fd, content, strlen(content));
+	if (fd = open(path, O_WRONLY) == -1)
+	{
+		perror("Failed to open sysfs file");
+		return;
+	}
+	if (write(fd, content, strlen(content) == -1))
+	{
+		perror("Failed to write sysfs file");
+	}
 	close(fd);
 }
+
 
 char *getprop(char *key)
 {
