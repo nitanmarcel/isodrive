@@ -9,7 +9,7 @@
 #include <sstream>
 #include <array>
 #include <memory>
-
+#include <cstdio>
 
 // https://stackoverflow.com/a/123724
 void trim(char *s)
@@ -58,15 +58,18 @@ bool isdir(char *path)
 void sysfs_write(char *path, char *content)
 {
 	std::cout << "Write: " << content << " -> " << path << std::endl;
-	std::ofstream sysfsFile;
-	sysfsFile.open(path);
-	if (!sysfsFile.is_open()) {
-		perror("Failed to open sysfs path");
-	}
-	sysfsFile << content;
-	perror("Status");
+	std::ofstream sysfsFile(path);
+	sysfsFile << content << std::endl;
 	sysfsFile.close();
-	std::cout << std::endl;
+}
+
+char *sysfs_read(char *path)
+{
+	char *value = nullptr;
+	std::ifstream sysfsFile(path);
+	sysfsFile >> path;
+	sysfsFile.close();
+	return value;
 }
 
 

@@ -6,12 +6,14 @@
 #include "configfsisomanager.h"
 #include <dirent.h>
 #include <unistd.h>
+#include <string.h>
 
 char *get_gadget_root()
 {
 	char *configFsRoot = fs_mount_point("configfs");
 	char *usbGadgetRoot = strjin(configFsRoot, "/usb_gadget/"); 
 	char *gadgetRoot = nullptr;
+	char *udc = nullptr;
 
 	struct dirent *entry = nullptr;
 	DIR *dp = nullptr;
@@ -22,7 +24,9 @@ char *get_gadget_root()
 			if (entry->d_name[0] != '.')
 			{
 				gadgetRoot = strjin(usbGadgetRoot, entry->d_name);
-				break;
+				udc = strjin(gadgetRoot, "/UDC");
+				if (strcmp(udc, getprop("sys.usb.controller")) == 1)
+					break;
 			}
 		}
 	return gadgetRoot;
@@ -65,6 +69,7 @@ void mount_iso(char *iso_path)
 	char *lunRo = strjin(lunRoot, "/ro");
 
 	reset_udc();
+	
 	if (!isdir(massStorageRoot))
 	{
 		mkdir(massStorageRoot, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
