@@ -24,7 +24,7 @@ char *get_gadget_root()
 			if (entry->d_name[0] != '.')
 			{
 				gadgetRoot = strjin(usbGadgetRoot, entry->d_name);
-				udc = strjin(gadgetRoot, "/UDC");
+				udc = sysfs_read(strjin(gadgetRoot, "/UDC"));
 				if (strcmp(udc, getprop("sys.usb.controller")) == 1)
 					break;
 			}
