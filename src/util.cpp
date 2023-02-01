@@ -65,13 +65,19 @@ void sysfs_write(char *path, char *content)
 
 char *sysfs_read(char *path)
 {
-	char *value = nullptr;
+	std::string value;
 	std::ifstream sysfsFile(path);
-	sysfsFile >> path;
+	if (!sysfsFile.is_open())
+	{
+		return nullptr;
+	}
+	sysfsFile >> value;
 	sysfsFile.close();
-	return value;
+	char *result = new char[value.length() + 1];
+	strcpy(result, value.c_str());
+	return result;
+	
 }
-
 
 char *getprop(char *key)
 {
