@@ -8,13 +8,15 @@
 
 * `make`
 
+* `sudo make install` (optional)
+
 mount
 
-* `sudo ./isodrive /full/path/to/file.iso`
+* `sudo isodrive /full/path/to/file.iso`
 
 umount
 
-* `sudo ./isodrive`
+* `sudo isodrive`
 
 
 Inspired by https://github.com/fredldotme/ISODriveUT
