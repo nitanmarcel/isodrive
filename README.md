@@ -1,4 +1,4 @@
-# isodrive (halium)
+# isodrive (configfs)
 
 * `sudo apt install build-essential`
 
