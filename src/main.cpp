@@ -20,7 +20,7 @@ int main(int argc, char* argv[]){
 	}
 	if (argc == 1)
 	{
-		iso_target = "";
+		iso_target = (char*)"";
 	}
 
 	if (argc > 2)

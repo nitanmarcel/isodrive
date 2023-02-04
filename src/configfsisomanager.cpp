@@ -73,7 +73,6 @@ void mount_iso(char *iso_path, char *cdrom, char *ro)
 	}
 	char *configRoot = get_config_root();
 	char *udc = get_udc();
-	printf("udc found %s\n", udc);
 	char *functionRoot = strjin(gadgetRoot, (char*)"/functions");
 	char *massStorageRoot = strjin(functionRoot, (char*)"/mass_storage.0");
 	char *lunRoot = strjin(massStorageRoot, (char*)"/lun.0");
