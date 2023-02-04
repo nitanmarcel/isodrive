@@ -8,12 +8,16 @@
 #include <unistd.h>
 #include <string.h>
 
+bool supported()
+{
+	return fs_mount_point((char*)"configfs") != nullptr;
+}
+
 char *get_gadget_root()
 {
-	char *configFsRoot = fs_mount_point("configfs");
-	char *usbGadgetRoot = strjin(configFsRoot, "/usb_gadget/"); 
+	char *configFsRoot = fs_mount_point((char*)"configfs");
+	char *usbGadgetRoot = strjin(configFsRoot, (char*)"/usb_gadget/"); 
 	char *gadgetRoot = nullptr;
-	char *udc = nullptr;
 
 	struct dirent *entry = nullptr;
 	DIR *dp = nullptr;
@@ -23,10 +27,12 @@ char *get_gadget_root()
 		{
 			if (entry->d_name[0] != '.')
 			{
-				gadgetRoot = strjin(usbGadgetRoot, entry->d_name);
-				udc = sysfs_read(strjin(gadgetRoot, "/UDC"));
-				if (strcmp(udc, getprop("sys.usb.controller")) == 0)
+				char *gadget = strjin(usbGadgetRoot, entry->d_name);
+				if (sysfs_read(strjin(gadget, (char*)"/UDC")) != nullptr)
+				{
+					gadgetRoot = gadget;
 					break;
+				}
 			}
 		}
 	return gadgetRoot;
@@ -35,7 +41,11 @@ char *get_gadget_root()
 char *get_config_root()
 {
 	char *gadgetRoot = get_gadget_root();
-	char *usbConfigRoot = strjin(gadgetRoot, "/configs/");
+	if (gadgetRoot == nullptr)
+	{
+		return nullptr;
+	}
+	char *usbConfigRoot = strjin(gadgetRoot, (char*)"/configs/");
 	char *configRoot = nullptr;
 
 	struct dirent *entry = nullptr;
@@ -53,48 +63,57 @@ char *get_config_root()
 	return configRoot;
 }
 
-void mount_iso(char *iso_path)
+void mount_iso(char *iso_path, char *cdrom, char *ro)
 {
 	char *gadgetRoot = get_gadget_root();
+	if (gadgetRoot == nullptr)
+	{
+		std::cerr << "No active gadget found" << std::endl;
+		return;
+	}
 	char *configRoot = get_config_root();
-
-	char *functionRoot = strjin(gadgetRoot, "/functions");
-	char *massStorageRoot = strjin(functionRoot, "/mass_storage.0");
-	char *lunRoot = strjin(massStorageRoot, "/lun.0");
+	char *udc = get_udc();
+	printf("udc found %s\n", udc);
+	char *functionRoot = strjin(gadgetRoot, (char*)"/functions");
+	char *massStorageRoot = strjin(functionRoot, (char*)"/mass_storage.0");
+	char *lunRoot = strjin(massStorageRoot, (char*)"/lun.0");
 	
-	char *stallFile = strjin(massStorageRoot, "/stall");
-	char *udcFile = strjin(gadgetRoot, "/UDC");
-	char *lunFile = strjin(lunRoot, "/file");
-	char *lunCdRom = strjin(lunRoot, "/cdrom");
-	char *lunRo = strjin(lunRoot, "/ro");
+	char *stallFile = strjin(massStorageRoot, (char*)"/stall");
+	char *udcFile = strjin(gadgetRoot, (char*)"/UDC");
+	char *lunFile = strjin(lunRoot, (char*)"/file");
+	char *lunCdRom = strjin(lunRoot, (char*)"/cdrom");
+	char *lunRo = strjin(lunRoot, (char*)"/ro");
 
-	reset_udc();
+	set_udc((char*)"", gadgetRoot);
 	
 	if (!isdir(massStorageRoot))
 	{
 		mkdir(massStorageRoot, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	}
-	if (!isdir(strjin(configRoot, "/mass_storage.0")))
+	if (!isdir(strjin(configRoot, (char*)"/mass_storage.0")))
 	{
-		symlink(massStorageRoot, strjin(configRoot, "/mass_storage.0"));
+		symlink(massStorageRoot, strjin(configRoot, (char*)"/mass_storage.0"));
 	}
 	sysfs_write(lunFile, iso_path);
-	sysfs_write(lunCdRom, "0");
-	sysfs_write(lunRo, "1");
+	sysfs_write(lunCdRom, cdrom);
+	sysfs_write(lunRo, ro);
 
-	set_udc();
+	set_udc(udc, gadgetRoot);
 }
 
-void reset_udc()
+void set_udc(char *udc, char *gadget)
 {
-	char *gadget_root = get_gadget_root();
-	char *udcFile = strjin(gadget_root, "/UDC");
-	sysfs_write(udcFile, "");
+	char *udcFile = strjin(gadget, (char*)"/UDC");
+	sysfs_write(udcFile, udc);
 }
 
-void set_udc()
+char *get_udc()
 {
 	char *gadget_root = get_gadget_root();
-	char *udcFile = strjin(gadget_root, "/UDC");
-	sysfs_write(udcFile, getprop("sys.usb.controller"));
+	if (gadget_root == nullptr)
+	{
+		return nullptr;
+	}
+	char *udcFile = strjin(gadget_root, (char*)"/UDC");
+	return sysfs_read(udcFile);
 }

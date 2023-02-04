@@ -11,24 +11,13 @@
 #include <memory>
 #include <cstdio>
 
-// https://stackoverflow.com/a/123724
-void trim(char *s)
-{
-	char * p = s;
-	int l = strlen(p);
-	while(isspace(p[l - 1])) p[--l] = 0;
-	while(* p && isspace(* p)) ++p, --l;
-
-	memmove(s, p, l + 1);
-}
-
 char *fs_mount_point(char *filesystem_type) {
 	struct mntent *ent;
 	FILE *mounts;
-	char *mount_point = NULL;
+	char *mount_point = nullptr;
 
 	mounts = setmntent("/proc/mounts", "r");
-	while (NULL != (ent = getmntent(mounts))) {
+	while (nullptr != (ent = getmntent(mounts))) {
 		if (strcmp(ent->mnt_fsname, filesystem_type) == 0)
 		{
 			mount_point = ent->mnt_dir;
@@ -73,21 +62,12 @@ char *sysfs_read(char *path)
 	}
 	sysfsFile >> value;
 	sysfsFile.close();
+	if (value.empty())
+	{
+		return nullptr;
+	}
 	char *result = new char[value.length() + 1];
 	strcpy(result, value.c_str());
 	return result;
 	
-}
-
-char *getprop(char *key)
-{
-	std::array<char, 128> buffer;
-	char *value;
-	char *cmd = strjin("getprop ", key);
-	std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
-	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
-		value = strjin("", buffer.data());
-	trim(value);
-	return value;
-
 }
