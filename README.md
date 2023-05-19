@@ -30,5 +30,15 @@ mount (as read write)
 
 * `sudo isodrive /full/path/to/file.iso 0 0`
 
+## Linux
+* _Has been only tested on Halium based mobile linux, but should work on mainline devices too._
+
+## Android
+
+* _On Android you must be compiled in termux, using clang++_
+* _On Android you might manually need to mount configfs by running: `mount -t configfs configfs /sys/kernel/config`_
+
+## Credits
+
 
 Inspired by https://github.com/fredldotme/ISODriveUT
