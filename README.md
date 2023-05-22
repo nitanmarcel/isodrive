@@ -38,7 +38,9 @@ mount (as read write)
 * _On Android you must be compiled in termux, using clang++_
 * _On Android you might manually need to mount configfs by running: `mount -t configfs configfs /sys/kernel/config`_
 
-## Credits
+## Os Support
+* _Should support almost every bootable OS images, but for those who don't work or need extra steps, are documented in the [WIKI](https://github.com/nitanmarcel/isodrive/wiki)_
 
+## Credits
 
 Inspired by https://github.com/fredldotme/ISODriveUT
