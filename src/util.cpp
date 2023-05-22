@@ -10,6 +10,7 @@
 #include <array>
 #include <memory>
 #include <cstdio>
+#include <dirent.h>
 
 char *fs_mount_point(char *filesystem_type) {
 	struct mntent *ent;
@@ -22,6 +23,17 @@ char *fs_mount_point(char *filesystem_type) {
 		{
 			mount_point = ent->mnt_dir;
 			break;
+		}
+	}
+
+	// Alternate search location on Android
+	if (mount_point == nullptr)
+	{
+		const char *alt_usb_gadget = "/config/usb_gadget";
+		DIR *dir = opendir(alt_usb_gadget);
+		if (dir)
+		{
+			mount_point = (char*)"/config";
 		}
 	}
 	return mount_point;
