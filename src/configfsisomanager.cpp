@@ -1,4 +1,4 @@
-#include <iostream>
+
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -7,6 +7,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
 
 bool supported()
 {
@@ -68,7 +69,7 @@ void mount_iso(char *iso_path, char *cdrom, char *ro)
 	char *gadgetRoot = get_gadget_root();
 	if (gadgetRoot == nullptr)
 	{
-		std::cerr << "No active gadget found" << std::endl;
+		printf("No active gadget found\n");
 		return;
 	}
 	char *configRoot = get_config_root();

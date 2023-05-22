@@ -4,7 +4,6 @@
 #include <string.h>  
 #include <sys/stat.h>
 #include <unistd.h>
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <array>
@@ -58,7 +57,7 @@ bool isdir(char *path)
 
 void sysfs_write(char *path, char *content)
 {
-	std::cout << "Write: " << content << " -> " << path << std::endl;
+	printf("Write: %s -> %s\n", content, path);
 	std::ofstream sysfsFile(path);
 	sysfsFile << content << std::endl;
 	sysfsFile.close();

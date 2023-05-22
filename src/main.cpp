@@ -1,5 +1,4 @@
 #include "configfsisomanager.h"
-#include <iostream>
 #include <unistd.h>
 #include <stdio.h>
 
@@ -10,12 +9,12 @@ int main(int argc, char* argv[]){
 
 	if (!supported())
 	{
-		std::cerr << "Device does not support configfs usb gadget" << std::endl;
+		printf("Device does not support configfs usb gadget\n");
 		return 1;
 	}
 	if (getuid() != 0)
 	{
-		std::cerr << "Permission denied" << std::endl;
+		printf("Permission denied\n");
 		return 1;
 	}
 	if (argc == 1)
