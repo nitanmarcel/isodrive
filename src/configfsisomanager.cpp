@@ -109,6 +109,45 @@ void mount_iso(char *iso_path, char *cdrom, char *ro)
   set_udc(udc, gadgetRoot);
 }
 
+void umount_iso()
+{
+  char *gadgetRoot = get_gadget_root();
+
+  if (gadgetRoot == nullptr)
+  {
+    printf("No active gadget found\n");
+    return;
+  }
+  char *configRoot      = get_config_root();
+  char *udc             = get_udc();
+  char *functionRoot    = strjin(gadgetRoot, (char *)"/functions");
+  char *massStorageRoot = strjin(functionRoot, (char *)"/mass_storage.0");
+  char *lunRoot         = strjin(massStorageRoot, (char *)"/lun.0");
+
+  char *stallFile = strjin(massStorageRoot, (char *)"/stall");
+  char *udcFile   = strjin(gadgetRoot, (char *)"/UDC");
+  char *lunFile   = strjin(lunRoot, (char *)"/file");
+  char *lunCdRom  = strjin(lunRoot, (char *)"/cdrom");
+  char *lunRo     = strjin(lunRoot, (char *)"/ro");
+
+  set_udc((char *)"", gadgetRoot);
+
+  if (!isdir(massStorageRoot))
+  {
+    mkdir(massStorageRoot, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+  }
+
+  if (!isdir(strjin(configRoot, (char *)"/mass_storage.0")))
+  {
+    symlink(massStorageRoot, strjin(configRoot, (char *)"/mass_storage.0"));
+  }
+  sysfs_write(lunFile,  (char *)"");
+  sysfs_write(lunCdRom, (char *)"0");
+  sysfs_write(lunRo,    (char *)"0");
+
+  set_udc(udc, gadgetRoot);
+}
+
 void set_udc(char *udc, char *gadget)
 {
   char *udcFile = strjin(gadget, (char *)"/UDC");

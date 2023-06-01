@@ -55,7 +55,14 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  mount_iso(iso_target, cdrom, ro);
+  if (argc > 1)
+  {
+    mount_iso(iso_target, cdrom, ro);
+  }
+  else
+  {
+    umount_iso();
+  }
 
   return 0;
 }
