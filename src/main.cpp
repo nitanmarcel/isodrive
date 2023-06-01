@@ -7,7 +7,6 @@ int main(int argc, char* argv[]){
 		char *iso_target = argv[1];
 		char *cdrom = (char*)"0";
 		char *ro = (char*)"1";
-		
 		for (int i = 1; i < argc; i++)
 		{
 			if (strcmp(argv[i], "-rw") == 0)
@@ -50,19 +49,6 @@ int main(int argc, char* argv[]){
 	{
 		printf("Permission denied\n");
 		return 1;
-	}
-	if (argc == 1)
-	{
-		iso_target = (char*)"";
-	}
-
-	if (argc > 2)
-	{
-		cdrom = argv[2];
-	}
-	if (argc > 3)
-	{
-		ro = argv[3];
 	}
 
 	mount_iso(iso_target, cdrom, ro);
