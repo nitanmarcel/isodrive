@@ -26,6 +26,7 @@ char* get_gadget_root()
   dp = opendir(usbGadgetRoot);
 
   if (dp != nullptr)
+  {
     while ((entry = readdir(dp)))
     {
       if (entry->d_name[0] != '.')
@@ -39,6 +40,7 @@ char* get_gadget_root()
         }
       }
     }
+  }
   return gadgetRoot;
 }
 
@@ -59,6 +61,7 @@ char* get_config_root()
   dp = opendir(usbConfigRoot);
 
   if (dp != nullptr)
+  {
     while ((entry = readdir(dp)))
     {
       if (entry->d_name[0] != '.')
@@ -67,6 +70,7 @@ char* get_config_root()
         break;
       }
     }
+  }
   return configRoot;
 }
 
