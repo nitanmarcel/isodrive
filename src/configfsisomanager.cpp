@@ -109,12 +109,6 @@ void mount_iso(char *iso_path, char *cdrom, char *ro)
   set_udc(udc, gadgetRoot);
 }
 
-void umount_iso()
-{
-  char *empty = (char *)"";
-  mount_iso(empty, empty, empty);
-}
-
 void set_udc(char *udc, char *gadget)
 {
   char *udcFile = strjin(gadget, (char *)"/UDC");

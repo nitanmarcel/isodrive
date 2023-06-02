@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-  char *iso_target = argv[1];
+  char *iso_target = (char *)"";
   char *cdrom      = (char *)"0";
   char *ro         = (char *)"1";
 
@@ -55,14 +55,7 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  if (argc > 1)
-  {
-    mount_iso(iso_target, cdrom, ro);
-  }
-  else
-  {
-    umount_iso();
-  }
+  mount_iso(iso_target, cdrom, ro);
 
   return 0;
 }
