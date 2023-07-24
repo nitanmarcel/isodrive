@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
   if (argc == 1)
   {
     printf("Usage:\n");
-    printf("cdrom [FILE]... [OPTION]...\n");
+    printf("isodrive [FILE]... [OPTION]...\n");
     printf("Mounts the given FILE as a bootable device using configfs.\n");
     printf(
       "Run without any arguments to unmount any mounted files and display this help message.\n\n");
