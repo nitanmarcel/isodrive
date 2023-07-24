@@ -3,6 +3,22 @@
 #include <stdio.h>
 #include <string.h>
 
+int print_help()
+{
+    printf("Usage:\n");
+    printf("isodrive [FILE]... [OPTION]...\n");
+    printf("Mounts the given FILE as a bootable device using configfs.\n");
+    printf(
+      "Run without any arguments to unmount any mounted files and display this help message.\n\n");
+
+    printf("Optional arguments:\n");
+    printf("-rw\t Mounts the file in read write mode.\n");
+    printf("-cdrom\t Mounts the file as a cdrom.\n\n");
+    printf("UMOUNT:\n");
+
+    return 1;
+}
+
 int main(int argc, char *argv[])
 {
   char *iso_target = (char *)"";
@@ -19,7 +35,7 @@ int main(int argc, char *argv[])
     {
       cdrom = (char *)"1";
     }
-    else
+    else if(strcmp(iso_target, "") == 0)
     {
       iso_target = argv[i];
     }
@@ -27,32 +43,38 @@ int main(int argc, char *argv[])
 
   if (argc == 1)
   {
-    printf("Usage:\n");
-    printf("isodrive [FILE]... [OPTION]...\n");
-    printf("Mounts the given FILE as a bootable device using configfs.\n");
-    printf(
-      "Run without any arguments to unmount any mounted files and display this help message.\n\n");
-
-    printf("Optional arguments:\n");
-    printf("-rw\t Mounts the file in read write mode.\n");
-    printf("-cdrom\t Mounts the file as a cdrom.\n\n");
-    printf("UMOUNT:\n");
-  }
-  else
-  {
-    printf("MOUNT:\n");
+    return print_help();
   }
 
-  if (!supported())
+  else if (!supported())
   {
     printf("Device does not support configfs usb gadget\n");
     return 1;
   }
 
-  if (getuid() != 0)
+  else if (getuid() != 0)
   {
     printf("Permission denied\n");
     return 1;
+  }
+
+  else
+  {
+    printf("MOUNT:\n");
+  }
+
+  if (strcmp(ro, "1") != 0 && strcmp(ro, "0") != 0)
+  {
+    printf("\nFaled to parse -rw argument. Defaulting to ro\n");
+    printf("Check --help for more usage info\n");
+    ro = (char *)"0";
+  }
+
+  if (strcmp(cdrom, "1") != 0 && strcmp(cdrom, "0") != 0)
+  {
+    printf("\nFailed to parse -cdrom argument. Defaulting to disabled\n");
+    printf("Check --help for more usage info\n");
+    cdrom = (char *)"0";
   }
 
   mount_iso(iso_target, cdrom, ro);
