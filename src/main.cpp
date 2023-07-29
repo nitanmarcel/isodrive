@@ -35,7 +35,11 @@ void configs(char *iso_target, char *cdrom, char *ro) {
   mount_iso(iso_target, cdrom, ro);
 }
 
-void usb(char *iso_target) {
+void usb(char *iso_target, char *cdrom, char *ro) {
+  if (strcmp(cdrom, "0") != 0 || strcmp(ro, "1") != 0)
+  {
+    printf((char*)"cdrom/ro flags ignored. (this is expected)");
+  }
   if (strcmp(iso_target, (char *)"") == 0)
     usb_reset_iso();
   else
@@ -71,7 +75,7 @@ int main(int argc, char *argv[]) {
   }
 
   if (usb_supported())
-    usb(iso_target);
+    usb(iso_target, cdrom, ro);
   else if (supported())
     configs(iso_target, cdrom, ro);
   else
