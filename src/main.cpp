@@ -36,7 +36,7 @@ void configs(char *iso_target, char *cdrom, char *ro) {
 }
 
 void usb(char *iso_target) {
-  if (strcmp(iso_target, (char *)""))
+  if (strcmp(iso_target, (char *)"") == 0)
     usb_reset_iso();
   else
     usb_mount_iso(iso_target);
