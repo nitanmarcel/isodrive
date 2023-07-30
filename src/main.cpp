@@ -49,7 +49,7 @@ void usb(char *iso_target, char *cdrom, char *ro) {
 int main(int argc, char *argv[]) {
   char *iso_target = (char *)"";
   char *cdrom = (char *)"0";
-  char *ro = (char *)"1";
+  char *ro = (char *)"1"; 
 
   for (int i = 1; i < argc; i++) {
     if (strcmp(argv[i], "-rw") == 0) {
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
   }
 
   if (argc == 1) {
-    return print_help();
+    print_help();
   }
 
   else if (getuid() != 0) {
