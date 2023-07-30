@@ -12,14 +12,23 @@ int print_help() {
          "this help message.\n\n");
 
   printf("Optional arguments:\n");
-  printf("-rw\t Mounts the file in read write mode.\n");
-  printf("-cdrom\t Mounts the file as a cdrom.\n\n");
+  printf("-rw\t\t Mounts the file in read write mode.\n");
+  printf("-cdrom\t\t Mounts the file as a cdrom.\n");
+  printf("-configfs\t Forces the app to use configfs.\n");
+   printf("-usbgadget\t Forces the app to use usb_gadget.\n\n");
   printf("UMOUNT:\n");
 
   return 1;
 }
 
 void configs(char *iso_target, char *cdrom, char *ro) {
+  printf("Using configfs!\n");
+
+  if (!supported())
+  {
+    printf("usb_gadget is not supported!\n");
+    return;
+  }
   if (strcmp(ro, "1") != 0 && strcmp(ro, "0") != 0) {
     printf("\nFaled to parse -rw argument. Defaulting to ro\n");
     printf("Check --help for more usage info\n");
@@ -36,6 +45,12 @@ void configs(char *iso_target, char *cdrom, char *ro) {
 }
 
 void usb(char *iso_target, char *cdrom, char *ro) {
+  printf("Using usb_gadget!\n");
+  if (!usb_supported())
+  {
+    printf("usb_gadget is not supported!\n");
+    return;
+  }
   if (strcmp(cdrom, "0") != 0 || strcmp(ro, "1") != 0)
   {
     printf((char*)"cdrom/ro flags ignored. (this is expected)");
@@ -49,13 +64,19 @@ void usb(char *iso_target, char *cdrom, char *ro) {
 int main(int argc, char *argv[]) {
   char *iso_target = (char *)"";
   char *cdrom = (char *)"0";
-  char *ro = (char *)"1"; 
+  char *ro = (char *)"1";
+  char *configfs = (char *)"0";
+  char *usbgadget = (char *)"0";
 
   for (int i = 1; i < argc; i++) {
     if (strcmp(argv[i], "-rw") == 0) {
       ro = (char *)"0";
     } else if (strcmp(argv[i], "-cdrom") == 0) {
       cdrom = (char *)"1";
+    } else if (strcmp(argv[i], "-configfs") == 0) {
+      configfs = (char *)"1";
+    } else if (strcmp(argv[i], "-usbgadget") == 0) {
+      usbgadget = (char *)"1";
     } else if (strcmp(iso_target, "") == 0) {
       iso_target = argv[i];
     }
@@ -74,7 +95,13 @@ int main(int argc, char *argv[]) {
     printf("MOUNT:\n");
   }
 
-  if (usb_supported())
+  if (strcmp(configfs, "1") == 0)
+    configs(iso_target, cdrom, ro);
+  else if (strcmp(usbgadget, "1") == 0)
+  {
+    usb(iso_target, cdrom, ro);
+  }
+  else if (usb_supported())
     usb(iso_target, cdrom, ro);
   else if (supported())
     configs(iso_target, cdrom, ro);
