@@ -15,8 +15,7 @@ int print_help() {
   printf("-rw\t\t Mounts the file in read write mode.\n");
   printf("-cdrom\t\t Mounts the file as a cdrom.\n");
   printf("-configfs\t Forces the app to use configfs.\n");
-   printf("-usbgadget\t Forces the app to use usb_gadget.\n\n");
-  printf("UMOUNT:\n");
+  printf("-usbgadget\t Forces the app to use usb_gadget.\n\n");
 
   return 1;
 }
@@ -91,8 +90,9 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  else {
-    printf("MOUNT:\n");
+  if (strcmp(cdrom, "0") != 0 && strcmp(ro, "1") != 0) {
+    printf("Incompatible arguments -cdrom and -rw\n");
+    return 1;
   }
 
   if (strcmp(configfs, "1") == 0)
