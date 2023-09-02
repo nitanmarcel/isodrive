@@ -89,9 +89,13 @@ void mount_iso(char *iso_path, char *cdrom, char *ro) {
   if (!isdir(strjin(configRoot, (char *)"/mass_storage.0"))) {
     symlink(massStorageRoot, strjin(configRoot, (char *)"/mass_storage.0"));
   }
-  sysfs_write(lunFile, iso_path);
-  sysfs_write(lunCdRom, cdrom);
-  sysfs_write(lunRo, ro);
+  sysfs_write(lunFile, (char *)"");
+  if (strcmp(iso_path, "") != 0 )
+  {
+    sysfs_write(lunCdRom, cdrom);
+    sysfs_write(lunRo, ro);
+    sysfs_write(lunFile, iso_path);
+  }
 
   set_udc(udc, gadgetRoot);
 }
