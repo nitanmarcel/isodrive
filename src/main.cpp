@@ -15,7 +15,7 @@ int print_help() {
   printf("-rw\t\t Mounts the file in read write mode.\n");
   printf("-cdrom\t\t Mounts the file as a cdrom.\n");
   printf("-configfs\t Forces the app to use configfs.\n");
-  printf("-usbgadget\t Forces the app to use usb_gadget.\n\n");
+  printf("-usbgadget\t Forces the app to use sysfs.\n\n");
 
   return 1;
 }
@@ -44,7 +44,7 @@ void configs(char *iso_target, char *cdrom, char *ro) {
 }
 
 void usb(char *iso_target, char *cdrom, char *ro) {
-  printf("Using usb_gadget!\n");
+  printf("Using sysfs!\n");
   if (!usb_supported())
   {
     printf("usb_gadget is not supported!\n");
@@ -101,10 +101,10 @@ int main(int argc, char *argv[]) {
   {
     usb(iso_target, cdrom, ro);
   }
-  else if (usb_supported())
-    usb(iso_target, cdrom, ro);
   else if (supported())
     configs(iso_target, cdrom, ro);
+  else if (usb_supported())
+    usb(iso_target, cdrom, ro);
   else
     printf("Device does not support isodrive\n");
   return 0;
